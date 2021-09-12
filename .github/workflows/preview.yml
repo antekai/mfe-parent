@@ -1,0 +1,45 @@
+
+name: Preview Workflow
+
+on:
+  push:
+    branches:
+      - preview
+  pull_request:
+    types:
+      - labeled
+
+jobs:
+  deploy_preview:
+    if: contains(github.event.pull_request.labels.*.name, 'deploy preview') || github.ref == 'refs/heads/preview'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
+
+      - uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+
+      - run: yarn install --frozen-lockfile
+
+      - run: yarn build
+
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - shell: bash
+        env:
+          AWS_BUCKET: ${{ secrets.AWS_S3_BUCKET_PREVIEW }}
+        run: |
+          aws s3 sync build/ s3://$AWS_BUCKET
