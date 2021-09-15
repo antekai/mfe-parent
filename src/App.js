@@ -3,7 +3,9 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 
 import client from "./apollo";
 import ExchangeRates from "./ExchangeRates";
+import AraChild from "./AraChild";
 import Navigation from "./Navigation";
+import { loadScript } from "nova-helpers";
 
 const App = () => {
   return (
@@ -17,7 +19,9 @@ const App = () => {
         />
 
         <Switch>
-          <Route path="/child">Child route</Route>
+          <Route path="/child">
+            Child route <AraChild />
+          </Route>
           <Route path="/">
             <ExchangeRates />
           </Route>
@@ -26,5 +30,12 @@ const App = () => {
     </ApolloProvider>
   );
 };
+
+document.addEventListener("NovaMount", ({ detail }) => {
+  const { name } = detail;
+  if (name === "child") {
+    loadScript(`${process.env.REACT_APP_CHILD_URL}/child.bundle.js`);
+  }
+});
 
 export default App;
