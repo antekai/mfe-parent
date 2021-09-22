@@ -11,8 +11,8 @@ http://mfe-parent-prod.s3-website.eu-central-1.amazonaws.com/
 - production: http://mfe-child-prod.s3-website.eu-central-1.amazonaws.com/
 
 ### Preview - Migration to single spa
-http://mfe-parent-preview.s3-website.eu-central-1.amazonaws.com/
-new root: http://sispa-root.s3-website.eu-central-1.amazonaws.com/
+- http://mfe-parent-preview.s3-website.eu-central-1.amazonaws.com/
+- new root: http://sispa-root.s3-website.eu-central-1.amazonaws.com/
 
 > Note: after the ARA-to-single-spa migration this app becomes a child as with single-spa we need to use new root-app
 
